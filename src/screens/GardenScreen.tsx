@@ -1,11 +1,13 @@
+import { useNavigate } from "react-router-dom";
 import GardenCarousel from "../components/GardenCarousel";
 
 function GardenScreen() {
+  const navigate = useNavigate();
   return (
     <div>
       <div>
-        <button>📅 Calendar</button>
         <button>🏆 Achievements</button>
+        <button onClick={()=>navigate("/calendar")}>📅 Calendar</button>
       </div>
       <h1>Garden Screen</h1>
       <GardenCarousel />
