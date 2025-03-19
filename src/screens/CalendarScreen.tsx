@@ -49,7 +49,7 @@ function CalendarScreen() {
                         {Array.from({ length: 7 }).map((_, dayIndex) => {
                             const dayNumber = weekIndex * 7 + dayIndex - dayFirst + 1;
                             return (
-                            <td key={dayIndex} className={isPastDay(dayNumber) ? "past-day" : ""}>
+                            <td key={dayIndex} className={isPastDay(dayNumber) ? "past-day" : ""} onClick={()=>navigate(`/day/${monthsArray[month]} ${dayNumber}`)}>
                                 {dayNumber > 0 && dayNumber <= dayLast ? dayNumber : ""}
                             </td>
                             );
