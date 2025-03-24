@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-function TaskPopup({ onClose }: { onClose: () => void }) {
+interface TaskPopupProps {
+    onClose: () => void;
+    date: string;
+}
+
+function TaskPopup({onClose, date}: TaskPopupProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [alarm, setAlarm] = useState("");
@@ -9,7 +14,23 @@ function TaskPopup({ onClose }: { onClose: () => void }) {
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        console.log(title);
+        const existing = JSON.parse(localStorage.getItem("tasks") || "{}");
+        const newTask = {
+            id: crypto.randomUUID(),
+            title,
+            description,
+            alarm,
+            length: Number(duration),
+            color,
+            completed: false  
+        };
+
+        const updated = {
+            ...existing,
+            [date]: [...(existing[date] || []), newTask]
+        };
+        localStorage.setItem("tasks", JSON.stringify(updated));
+        onClose();
     };
 
     return (

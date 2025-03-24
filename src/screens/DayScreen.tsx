@@ -1,10 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 import TaskRow from "../components/TaskRow";
+import TaskPopup from "../components/TaskPopup";
 
 function DayScreen() {
     const navigate = useNavigate();
     const params = useParams();
     const date = params.date;
+    const [showPopup, setShowPopup] = useState(false);
 
     const testTask = {
         id: "1",
@@ -22,7 +25,7 @@ function DayScreen() {
             <div>
                 <div>
                     <h1>{date}</h1>
-                    <button onClick={()=>console.log("Open pop up")}>add</button>
+                    <button onClick={() => setShowPopup(true)}>add</button>
                 </div>
                 <div>
                 <TaskRow 
@@ -34,6 +37,7 @@ function DayScreen() {
                     color={testTask.color}
                     length={testTask.length}
                 />
+                {showPopup && <TaskPopup onClose={() => setShowPopup(false)} />}
                 </div>
             </div>
         </div>
