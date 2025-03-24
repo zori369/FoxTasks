@@ -1,23 +1,39 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TaskRow from "../components/TaskRow";
 import TaskPopup from "../components/TaskPopup";
+import { TaskType } from "../types/task";
 
 function DayScreen() {
     const navigate = useNavigate();
     const params = useParams();
     const date = params.date;
     const [showPopup, setShowPopup] = useState(false);
+    const [tasks, setTasks] = useState<TaskType[]>([]);
+    const [editingTask, setEditingTask] = useState<TaskType | null>(null);
 
-    const testTask = {
-        id: "1",
-        title: "Test Task",
-        description: "This is a sample task.",
-        completed: false,
-        alarm: "17:30",
-        color: "gray",
-        length: 5, // 5 minutes
-      };
+    function loadTasks() {
+        const allTasks = JSON.parse(localStorage.getItem("tasks") || "{}");
+        const dayTasks = allTasks[date!] || [];
+        setTasks(dayTasks);
+    }
+
+    function handleDelete(id: string) {
+        const allTasks = JSON.parse(localStorage.getItem("tasks") || "{}");
+        const updatedDayTasks = (allTasks[date!] || []).filter((task: TaskType) => task.id !== id);
+        allTasks[date!] = updatedDayTasks;
+        localStorage.setItem("tasks", JSON.stringify(allTasks));
+        loadTasks();
+    }
+
+    function handleEdit(task: TaskType) {
+        setEditingTask(task);
+        setShowPopup(true);
+    }
+
+    useEffect(() => {
+        loadTasks();
+    }, [date]);
 
     return (
         <div>
@@ -28,16 +44,24 @@ function DayScreen() {
                     <button onClick={() => setShowPopup(true)}>add</button>
                 </div>
                 <div>
-                <TaskRow 
-                    id={testTask.id}
-                    title={testTask.title}
-                    description={testTask.description}
-                    completed={testTask.completed}
-                    alarm={testTask.alarm}
-                    color={testTask.color}
-                    length={testTask.length}
-                />
-                {showPopup && <TaskPopup onClose={() => setShowPopup(false)} />}
+                    {tasks.map(task => (
+                        <TaskRow key={task.id} 
+                                {...task}
+                                onDelete={()=>handleDelete(task.id)}
+                                onEdit={()=>handleEdit(task)} 
+                        />
+                    ))}
+                    {showPopup && (
+                        <TaskPopup
+                            onClose={() => {
+                            setShowPopup(false);
+                            setEditingTask(null);
+                            loadTasks();
+                            }}
+                            date={date!}
+                            task={editingTask}
+                        />
+                    )}
                 </div>
             </div>
         </div>

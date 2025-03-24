@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { TaskType } from "../types/task";
 
 interface TaskPopupProps {
     onClose: () => void;
     date: string;
+    task?: TaskType | null;
 }
 
 function TaskPopup({onClose, date}: TaskPopupProps) {

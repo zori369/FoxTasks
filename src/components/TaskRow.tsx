@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { TaskType } from "../types/task";
 
 interface TaskProps {
   id: string;
@@ -8,9 +9,11 @@ interface TaskProps {
   alarm?: string;
   color: string;
   length?: number;
+  onEdit: (task: TaskType) => void;
+  onDelete: (id: string) => void;
 }
 
-function TaskRow({ id, title, description, completed, alarm, color, length }: TaskProps) {
+function TaskRow({ id, title, description, completed, alarm, color, length, onEdit, onDelete }: TaskProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [remainingTime, setRemainingTime] = useState(length ? length * 60 : 0);
   const [isRunning, setIsRunning] = useState(false);
@@ -29,8 +32,10 @@ function TaskRow({ id, title, description, completed, alarm, color, length }: Ta
 
     if (deltaX < -50) {
       setSwipeDirection("left");
+      onEdit({id, title, description, completed, alarm, color, length});
     } else if (deltaX > 50) {
       setSwipeDirection("right");
+      onDelete(id);
     } else {
       setSwipeDirection("");
     }
