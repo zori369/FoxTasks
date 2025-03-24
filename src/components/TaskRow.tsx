@@ -26,20 +26,25 @@ function TaskRow({ id, title, description, completed, alarm, color, length, onEd
     setSwipePosition(startX);
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const endX = e.changedTouches[0].clientX;
-    const deltaX = endX - swipePosition;
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const currentX = e.touches[0].clientX;
+    const deltaX = currentX - swipePosition;
 
-    if (deltaX < -50) {
-      setSwipeDirection("left");
-      onEdit({id, title, description, completed, alarm, color, length});
-    } else if (deltaX > 50) {
-      setSwipeDirection("right");
-      onDelete(id);
+    if (deltaX < -30) {
+        setSwipeDirection("left");
+    } else if (deltaX > 30) {
+        setSwipeDirection("right");
     } else {
-      setSwipeDirection("");
-    }
+        setSwipeDirection("");
+    } 
+  };
 
+  const handleTouchEnd = () => {
+   if (swipeDirection === "left") {
+      onEdit({id, title, description, completed, alarm, color, length});
+    } else if (swipeDirection === "right") {
+      onDelete(id);
+    }
     setSwipePosition(0);
   };
 
@@ -79,6 +84,7 @@ function TaskRow({ id, title, description, completed, alarm, color, length, onEd
       className={color ? color : "gray"}
       style={{ touchAction: "pan-y", padding: "1rem", backgroundColor: color }}
       onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       <div>
