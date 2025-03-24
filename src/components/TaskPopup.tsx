@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TaskType } from "../types/task";
 
 interface TaskPopupProps {
@@ -7,7 +7,7 @@ interface TaskPopupProps {
     task?: TaskType | null;
 }
 
-function TaskPopup({onClose, date}: TaskPopupProps) {
+function TaskPopup({onClose, date, task}: TaskPopupProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [alarm, setAlarm] = useState("");
@@ -16,24 +16,55 @@ function TaskPopup({onClose, date}: TaskPopupProps) {
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        const existing = JSON.parse(localStorage.getItem("tasks") || "{}");
-        const newTask = {
-            id: crypto.randomUUID(),
-            title,
-            description,
-            alarm,
-            length: Number(duration),
-            color,
-            completed: false  
-        };
-
-        const updated = {
-            ...existing,
-            [date]: [...(existing[date] || []), newTask]
-        };
-        localStorage.setItem("tasks", JSON.stringify(updated));
+        if (task) {
+            const existing = JSON.parse(localStorage.getItem("tasks") || "{}");
+          
+            const updatedTask = {
+              ...task,
+              title,
+              description,
+              alarm,
+              length: Number(duration),
+              color,
+            };
+          
+            const updatedDayTasks = (existing[date!] || []).map((t: TaskType) =>
+              t.id === task.id ? updatedTask : t
+            );
+          
+            existing[date!] = updatedDayTasks;
+            localStorage.setItem("tasks", JSON.stringify(existing));
+        }
+        else {
+            const existing = JSON.parse(localStorage.getItem("tasks") || "{}");
+            const newTask = {
+                id: crypto.randomUUID(),
+                title,
+                description,
+                alarm,
+                length: Number(duration),
+                color,
+                completed: false  
+            };
+    
+            const updated = {
+                ...existing,
+                [date]: [...(existing[date] || []), newTask]
+            };
+            localStorage.setItem("tasks", JSON.stringify(updated));
+        }
         onClose();
     };
+
+    useEffect(()=>{
+        if(task) {
+            setTitle(task.title);
+            setDescription(task.description || "");
+            setAlarm(task.alarm || "");
+            setDuration(task.length?.toString() || "");
+            setColor(task.color);
+        }
+    }, [task]);
 
     return (
       <div>
