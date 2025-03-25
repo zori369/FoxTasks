@@ -41,9 +41,9 @@ function TaskRow({ id, title, description, completed, alarm, color, length, onEd
 
   const handleTouchEnd = () => {
    if (swipeDirection === "left") {
-      onEdit({id, title, description, completed, alarm, color, length});
-    } else if (swipeDirection === "right") {
       onDelete(id);
+    } else if (swipeDirection === "right") {
+      onEdit({id, title, description, completed, alarm, color, length});
     }
     setSwipePosition(0);
   };
@@ -88,7 +88,7 @@ function TaskRow({ id, title, description, completed, alarm, color, length, onEd
       onTouchEnd={handleTouchEnd}
     >
       <div>
-        {swipeDirection === "left" && <button>Edit</button>}
+        {swipeDirection === "right" && <button>Edit</button>}
         <div>
           <h2>{title}</h2>
           <input type="checkbox" checked={completed} />
@@ -114,7 +114,7 @@ function TaskRow({ id, title, description, completed, alarm, color, length, onEd
           </div>
         )}
 
-        {swipeDirection === "right" && <button>Delete</button>}
+        {swipeDirection === "left" && <button>Delete</button>}
       </div>
     </div>
   );

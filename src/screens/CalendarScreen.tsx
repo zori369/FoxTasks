@@ -25,7 +25,7 @@ function CalendarScreen() {
         <div>
             <div>
                 <button onClick={()=>navigate("/")}>GardenMenu</button>
-                <button>Routines</button>
+                <button onClick={()=>navigate("/routines")}>Routines</button>
             </div>
             <div>
                 <table>
