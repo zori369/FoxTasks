@@ -1,7 +1,12 @@
 import { RoutineType } from "../types/routine";
 import { useState } from "react";
 
-function RoutineRow({ id, title, tasks }: RoutineType) {
+interface RoutineRowProps extends RoutineType {
+    onApply: (routine:RoutineType) => void;
+    onDelete: (id: string) => void;
+}
+
+function RoutineRow({ id, title, tasks, onApply, onDelete }: RoutineRowProps) {
     const [swipePosition, setSwipePosition] = useState(0);
     const [swipeDirection, setSwipeDirection] = useState("");
     
@@ -25,9 +30,9 @@ function RoutineRow({ id, title, tasks }: RoutineType) {
     
     const handleTouchEnd = () => {
        if (swipeDirection === "left") {
-          console.log("Edit");
+            onApply({id, title, tasks});
         } else if (swipeDirection === "right") {
-          console.log("delete");
+            onDelete(id);
         }
         setSwipePosition(0);
     };
@@ -38,11 +43,11 @@ function RoutineRow({ id, title, tasks }: RoutineType) {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
         >
-            {swipeDirection === "left" && <button>Apply</button>}
+            {swipeDirection === "right" && <button>Apply</button>}
             <div>
                 <h2>{title}</h2>
             </div>
-            {swipeDirection === "right" && <button>Delete</button>}
+            {swipeDirection === "left" && <button>Delete</button>}
         </div>
     );
 }
