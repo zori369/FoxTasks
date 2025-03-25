@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { RoutineType } from "../types/routine";
+import { useNavigate } from "react-router-dom";
 import RoutineRow from "../components/RoutineRow";
 
 function RoutineScreen() {
+    const navigate = useNavigate();
     const [routines, setRoutines] = useState<RoutineType[]>([]);
 
     function loadTasks() {
@@ -27,6 +29,7 @@ function RoutineScreen() {
 
     return (
         <div>
+            <button onClick={()=>navigate("/calendar")}>📅 Calendar</button>
             <div>
                 <h2>Routines</h2>
                 <button>Add</button>
