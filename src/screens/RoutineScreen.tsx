@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 import { RoutineType } from "../types/routine";
 import { useNavigate } from "react-router-dom";
 import RoutineRow from "../components/RoutineRow";
+import ApplyRoutinePopup from "../components/ApplyRoutinePopup";
 
 function RoutineScreen() {
     const navigate = useNavigate();
     const [routines, setRoutines] = useState<RoutineType[]>([]);
+    const [showApplyPopup, setShowApplyPopup] = useState(false);
+    const [routineToApply, setRoutineToApply] = useState<RoutineType | null>(null);
+
 
     function loadTasks() {
         const allTasks = JSON.parse(localStorage.getItem("routines") || "[]");
@@ -17,6 +21,8 @@ function RoutineScreen() {
     }, []);
 
     const handleApply = (routine: RoutineType) => {
+        setRoutineToApply(routine);
+        setShowApplyPopup(true);
         console.log(routine);
     };
 
@@ -42,6 +48,20 @@ function RoutineScreen() {
                         onApply={handleApply}
                     />
                 ))}
+                </div>
+                <div>
+                {showApplyPopup && routineToApply && (
+                    <ApplyRoutinePopup
+                        onClose={() => {
+                        setShowApplyPopup(false);
+                        setRoutineToApply(null);
+                        }}
+                        onApplyToDays={(data) => {
+                        console.log("Apply this routine to:", data);
+                        }}
+                        routine={routineToApply}
+                    />
+                )}
                 </div>
             </div>
         </div>
