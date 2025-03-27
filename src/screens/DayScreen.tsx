@@ -4,7 +4,11 @@ import TaskRow from "../components/TaskRow";
 import TaskPopup from "../components/TaskPopup";
 import { TaskType } from "../types/task";
 
-function DayScreen() {
+interface DayScreenPorps {
+    isRoutineMode?: boolean;
+}
+
+function DayScreen({isRoutineMode}: DayScreenPorps) {
     const navigate = useNavigate();
     const params = useParams();
     const date = params.date;

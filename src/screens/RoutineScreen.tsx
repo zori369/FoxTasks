@@ -38,7 +38,7 @@ function RoutineScreen() {
             <button onClick={()=>navigate("/calendar")}>📅 Calendar</button>
             <div>
                 <h2>Routines</h2>
-                <button>Add</button>
+                <button onClick={() => navigate("/routine/new")}>Add</button>
                 <div>
                 {routines.map((routine) => (
                     <RoutineRow
@@ -57,8 +57,31 @@ function RoutineScreen() {
                         setRoutineToApply(null);
                         }}
                         onApplyToDays={(data) => {
-                        console.log("Apply this routine to:", data);
+                            const existingTasks = JSON.parse(localStorage.getItem("tasks") || "{}");
+                          
+                            const routineTasks = routineToApply!.tasks.map(task => ({
+                                ...task,
+                                id: crypto.randomUUID(),
+                                completed: false,
+                            }));
+                          
+                            if (data.type === "weekly") {
+                                localStorage.setItem("weeklyRoutines", JSON.stringify([
+                                    ...(JSON.parse(localStorage.getItem("weeklyRoutines") || "[]")),
+                                    { routineId: routineToApply!.id, days: data.days }
+                                ]));
+                            } else {
+                                data.dates.forEach(date => {
+                                    existingTasks[date] = [...(existingTasks[date] || []), ...routineTasks];
+                                });
+                            
+                                localStorage.setItem("tasks", JSON.stringify(existingTasks));
+                            }
+                          
+                            setShowApplyPopup(false);
+                            setRoutineToApply(null);
                         }}
+                          
                         routine={routineToApply}
                     />
                 )}

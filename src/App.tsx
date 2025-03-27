@@ -11,6 +11,7 @@ function App() {
       <Route path="/calendar" element={<CalendarScreen />} />
       <Route path="/day/:date" element={<DayScreen />} />
       <Route path="/routines" element={<RoutineScreen />} />
+      <Route path="/routine/new" element={<DayScreen isRoutineMode />} />
     </Routes>
   );
 }
